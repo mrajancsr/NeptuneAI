@@ -127,3 +127,17 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#py39
+py39
+neptune_env
+
+#DS store
+.DS_Store
+
+#Secrets
+secrets
+
+#ipynb and test files
+*.ipynb
+test.py
