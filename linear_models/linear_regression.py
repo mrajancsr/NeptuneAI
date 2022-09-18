@@ -369,13 +369,17 @@ class LinearRegressionMLE(LinearBase):
             self.diagnostics = compute_regression_diagnostics(self, X, y)
         return self
 
-    def predict(self, X: ArrayLike, thetas: Optional[ArrayLike] = None) -> NDArray:
+    def predict(
+        self,
+        X: ArrayLike,
+        thetas: Optional[ArrayLike] = None,
+    ) -> NDArray:
         """makes predictions of response variable given input params
         Args:
         X:
-            shape = (n_samples, p_features)
+            shape = (n_samples, d_features)
             n_samples is number of instances
-            p_features is number of features
+            d_features is number of features
             - if bias is true, a ones column is needed
         thetas:
             if initialized to None:
@@ -445,7 +449,11 @@ class LinearRegressionGD(LinearBase):
         self.run = True
         return self
 
-    def predict(self, X: ArrayLike, thetas: Optional[ArrayLike] = None) -> NDArray:
+    def predict(
+        self,
+        X: ArrayLike,
+        thetas: Optional[ArrayLike] = None,
+    ) -> NDArray:
         """Makes predictions of target variable given data
 
         Parameters
