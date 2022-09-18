@@ -9,10 +9,11 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Union
 
 import numpy as np
-from marketlearn.learning.linear_models.base import LinearBase
 from numpy.typing import ArrayLike, NDArray
 from scipy.linalg import solve_triangular
 from scipy.optimize import minimize
+
+from linear_models.base import LinearBase
 
 
 @dataclass
