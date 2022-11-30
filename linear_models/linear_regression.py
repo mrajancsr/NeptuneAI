@@ -37,10 +37,10 @@ class RegressionDiagnostics:
     def __post_init__(self) -> None:
         n_samples, p_features = self.X.shape[0], self.X.shape[1]
         ybar = self.y.mean()
-        self.predictions = getattr(self.obj, "predict")(self.X)
+        self.predictions = self.model.predict(self.X)
         self.residuals = self.y - self.predictions
         self.rss = self.residuals @ self.residuals
-        self.total_features = p_features + getattr(self.obj, "bias")
+        self.total_features = p_features + self.model.bias
         self.degrees_of_freedom = n_samples - self.total_features
         self.s2 = self.rss / self.degrees_of_freedom
         self.tss = (self.y - ybar) @ (self.y - ybar)
@@ -61,6 +61,8 @@ class LinearRegression(LinearBase):
     Implements the classic Linear Regression via ols
     Args:
     bias: indicates if intercept is added or not
+    degree: degree of the polynomial, default=1
+    regularization: supports 'l2' for ridge or 'l1' for lasso
 
     Attributes:
     theta:          Coefficient Weights after fitting
@@ -91,6 +93,7 @@ class LinearRegression(LinearBase):
     degree: int = 1
     run: bool = field(init=False, default=False)
     theta: NDArray = field(init=False, default=np.array([]))
+    regularization: Optional[str] = None
     diagnostics: Optional[RegressionDiagnostics] = field(init=False)
 
     def _normal(self, A: NDArray, b: NDArray) -> NDArray:
@@ -210,7 +213,7 @@ class LinearRegression(LinearBase):
         degree, bias = self.degree, self.bias
         X = self.make_polynomial(X, degree, bias)
         weights = self._linear_solve(A=X, b=y, method=method)
-        if weights:
+        if weights is not None and len(weights) != 0:
             self.theta = weights
             self.run = True
 
