@@ -13,7 +13,7 @@ from numpy.typing import ArrayLike, NDArray
 from scipy.linalg import solve_triangular
 from scipy.optimize import minimize
 
-from linear_models.base import LinearBase
+from neptunelearn.linear_models.base import LinearBase
 
 
 @dataclass
@@ -22,8 +22,8 @@ class RegressionDiagnostics:
     X: NDArray
     y: NDArray
     theta: NDArray
-    predictions: Optional[NDArray] = field(init=False, default=np.array([]))
-    residuals: NDArray = field(init=False, default=np.array([]))
+    predictions: Optional[NDArray] = field(init=False, default_factory=np.array([]))
+    residuals: NDArray = field(init=False, default_factory=np.array([]))
     rss: float = field(init=False, default=0.0)
     tss: float = field(init=False, default=0.0)
     ess: float = field(init=False, default=0.0)
@@ -32,7 +32,7 @@ class RegressionDiagnostics:
     s2: float = field(init=False, default=0.0)
     r2: float = field(init=False, default=0.0)
     bic: float = field(init=False, default=0.0)
-    param_covar: NDArray = field(init=False, default=np.array([]))
+    param_covar: NDArray = field(init=False, default_factory=np.array([]))
 
     def __post_init__(self) -> None:
         n_samples, p_features = self.X.shape[0], self.X.shape[1]
@@ -83,7 +83,7 @@ class LinearRegression(LinearBase):
     - A implementation based on QR decomposition is given based on
         min||Ax-b|| = min||Q'(QRx - b)|| = min||(Rx - Q'b)||
         based on decomposing nxp matrix A = QR, Q is orthogonal, R is upper
-        triangular
+        triangular and ||Qv|| = (Qv)'Qv = v'Q'Qv = v'v = ||v||
     - A cholesky implementation is also included based on converting an n x p
         into a pxp matrix: A'A = A'b, then letting M = A'A & y = A'b, then
         solve Mx = y.  Leting M = U'U, we solve this by forward/backward sub
@@ -92,7 +92,7 @@ class LinearRegression(LinearBase):
     bias: bool = True
     degree: int = 1
     run: bool = field(init=False, default=False)
-    theta: NDArray = field(init=False, default=np.array([]))
+    theta: NDArray = field(init=False, default_factory=np.array([]))
     regularization: Optional[str] = None
     diagnostics: Optional[RegressionDiagnostics] = field(init=False)
 
@@ -275,7 +275,7 @@ class LinearRegressionMLE(LinearBase):
     bias: bool = True
     degree: int = 1
     run: bool = field(init=False, default=False)
-    theta: Optional[NDArray] = field(init=False, default=np.array([]))
+    theta: Optional[NDArray] = field(init=False, default_factory=np.array([]))
     diagnostics: Optional[RegressionDiagnostics] = field(init=False)
 
     def _loglikelihood(self, true: ArrayLike, guess: ArrayLike) -> float:
