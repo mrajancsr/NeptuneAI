@@ -1,22 +1,23 @@
 {
-    "autoDocstring.docstringFormat": "numpy",
-    "python.linting.flake8Enabled": true,
-    "python.languageServer": "Pylance",
-    "python.linting.enabled": true,
-    "python.formatting.provider": "black",
-    "editor.formatOnSave": true,
-    "editor.codeLens": true,
-    "python.analysis.autoImportCompletions": true,
-    "code-runner.executorMap": {
-        "python": "$pythonPath -u $fullFileName"
-    },
-    "code-runner.clearPreviousOutput": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": true,
-    },
-    "git.ignoreLimitWarning": true,
-    "terminal.integrated.env.osx": {
-        "PYTHONPATH": "${workspaceFolder}"
-    },
-    "jupyter.notebookFileRoot": "${workspaceFolder}",
+  "autoDocstring.docstringFormat": "numpy",
+  "python.languageServer": "Pylance",
+  "editor.formatOnSave": true,
+  "editor.codeLens": true,
+  "python.analysis.autoImportCompletions": true,
+  "code-runner.executorMap": {
+    "python": "/Users/rajmani/Documents/research/Home/python/neptune-ai/py_env/bin/python3"
+  },
+  "code-runner.clearPreviousOutput": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "git.ignoreLimitWarning": true,
+  "terminal.integrated.env.osx": {
+    "PYTHONPATH": "/Users/rajmani/Documents/research/Home/python/neptune-ai"
+  },
+  "jupyter.notebookFileRoot": "${workspaceFolder}",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  }
 }
