@@ -9,6 +9,7 @@ learning rate eta has no effect on decision boundary
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 import matplotlib.pyplot as plt
@@ -19,27 +20,18 @@ from numpy.typing import NDArray
 from neptunelearn.linear_models.base import NeuralBase
 
 
+@dataclass
 class Perceptron(NeuralBase):
-    """Implements the Perceptron Learning Algorithm"""
+    """Implements the Perceptron Algorithm"""
 
-    def __init__(self, eta: float = 0.01, bias: bool = True, tol=10e-6):
-        self.eta = eta
-        self.bias = bias
-        self.thetas = None
-        self.weights = None
-        self.degree = 1
-        self.tol = tol
+    thetas: NDArray[np._float] = field(init=False, default_factory=lambda: np.array([]))
+    weights: pd.DataFrame = field(init=False, default=None)
+    degree: int = 1
+    bias: bool = True
+    tol: float = 10e-6
 
-    def _get_learner(self, learner: str) -> Callable[[NDArray, NDArray], Perceptron]:
-        if learner == "batch":
-            return self._fit_batch
-        elif learner == "online":
-            return self._fit_online
-        else:
-            return ValueError(learner)
-
-    def _fit_batch(self, X: NDArray, y: NDArray) -> Perceptron:
-        """fits training data using batch gradient descent
+    def fit(self, X: NDArray, y: NDArray) -> Perceptron:
+        """fits training data
 
         Parameters
         ----------
@@ -85,30 +77,6 @@ class Perceptron(NeuralBase):
         )
         return self
 
-    def _fit_online(self, X: NDArray, y: NDArray) -> Perceptron:
-        R = (np.sum(np.abs(X) ** 2, axis=-1) ** (0.5)).max()
-        bias = 0
-        # Initialize weights to 0
-        self.thetas = np.zeros(X.shape[1] + 1)
-        mistakes = 0
-        mistakes_from_previous_iteration = 0
-        while True:
-            for xi, target in zip(X, y):
-                if target * (self.net_input(xi, self.thetas[1:]) + bias) <= 0:
-                    self.thetas[1:] += self.eta * target * xi
-                    bias += self.eta * target * R * R
-                    mistakes += 1
-            if mistakes_from_previous_iteration == mistakes:
-                break
-            mistakes_from_previous_iteration = mistakes
-
-        self.thetas[0] = bias
-        return self
-
-    def fit(self, X: NDArray, y: NDArray, learner="batch") -> Perceptron:
-        learner = self._get_learner(learner)
-        return learner(X, y)
-
     def predict(self, X: NDArray) -> int:
         """Activation function to determine if neuron should fire or not
 
@@ -143,7 +111,7 @@ class Perceptron(NeuralBase):
         plt.grid()
 
 
-class Adaline(NeuralBase):
+class AdalineGD(NeuralBase):
     """Implements the Adaptive Linear Neuron by Bernard Widrow
     via Batch Gradient Descent
 
@@ -160,20 +128,20 @@ class Adaline(NeuralBase):
         self.thetas = None
         self.degree = 1
 
-    def fit(self, X: NDArray, y: NDArray) -> Adaline:
+    def fit(self, X: NDArray, y: NDArray) -> AdalineGD:
         """fits training data via batch gradient descent
 
         Parameters
         ----------
-        X : np.ndarray, shape=(n_samples, p_features)
+        X : np.ndarray, shape=(n_samples, d_features)
             n_samples is number of instances i.e rows
-            p_features is number of features (dimension of data)
+            d_features is number of features (dimension of data)
         y : np.ndarray
-            response variable
+            target variable
 
         Returns
         -------
-        Perception
+        AdalineGD
             object with fitted parameters
         """
         # add bias + weights for each neuron
@@ -231,3 +199,8 @@ class Adaline(NeuralBase):
             return 1 if self.activation(self.net_input(X, self.thetas)) >= 0.0 else -1
         else:
             return 1 if self.activation(self.net_input(X, thetas)) >= 0.0 else -1
+
+
+@dataclass
+class AdalineSGD(NeuralBase):
+    pass
