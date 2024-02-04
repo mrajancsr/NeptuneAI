@@ -92,9 +92,11 @@ class LinearRegression(LinearBase):
     bias: bool = True
     degree: int = 1
     run: bool = field(init=False, default=False)
-    theta: NDArray = field(init=False, default_factory=np.array([]))
+    theta: np.ndarray[np.float_] = field(
+        init=False, default_factory=lambda: np.array([])
+    )
     regularization: Optional[str] = None
-    diagnostics: Optional[RegressionDiagnostics] = field(init=False)
+    diagnostics: Optional[bool] = field(init=False, default=False)
 
     def _normal(self, A: NDArray, b: NDArray) -> NDArray:
         """Estimates parameters of regression model via normal method
@@ -159,7 +161,7 @@ class LinearRegression(LinearBase):
         A: NDArray,
         b: NDArray,
         method: str = "ols-cholesky",
-    ) -> Optional[NDArray]:
+    ) -> Optional[np.ndarray]:
         """numerically solves Ax = b where x is the parameters to be determined
         based on ||Ax - b||
 

@@ -1,5 +1,10 @@
 """Implements the Perceptron & Adaline Learning Algorithm
 Author: Rajan Subramanian
+
+Note: for the perceptron algorithm, if weights are initialized to 0, 
+learning rate eta has no effect on decision boundary
+- so initializing weights to 0 affects only the scale of weights not direction
+- todo: need to either correctly name fit_online or remove this as i dont know where this came from
 """
 
 from __future__ import annotations
@@ -17,17 +22,15 @@ from neptunelearn.linear_models.base import NeuralBase
 class Perceptron(NeuralBase):
     """Implements the Perceptron Learning Algorithm"""
 
-    def __init__(self, eta: float = 0.01, niter: int = 50, bias: bool = True):
+    def __init__(self, eta: float = 0.01, bias: bool = True, tol=10e-6):
         self.eta = eta
-        self.niter = niter
         self.bias = bias
         self.thetas = None
         self.weights = None
         self.degree = 1
+        self.tol = tol
 
-    def _get_learner(
-        self, learner: str
-    ) -> Callable[[np.ndarray, np.ndarray], Perceptron]:
+    def _get_learner(self, learner: str) -> Callable[[NDArray, NDArray], Perceptron]:
         if learner == "batch":
             return self._fit_batch
         elif learner == "online":
@@ -35,7 +38,7 @@ class Perceptron(NeuralBase):
         else:
             return ValueError(learner)
 
-    def _fit_batch(self, X: np.ndarray, y: np.ndarray) -> Perceptron:
+    def _fit_batch(self, X: NDArray, y: NDArray) -> Perceptron:
         """fits training data using batch gradient descent
 
         Parameters
@@ -60,8 +63,9 @@ class Perceptron(NeuralBase):
         weights = {}
         index = -1
         converged = False
-
+        self.errors = []
         while not converged:
+            error = 0
             index += 1
             prev_weights = self.thetas.copy()
             # for each example in training set
@@ -69,16 +73,19 @@ class Perceptron(NeuralBase):
                 # update weights if there are misclassifications
                 if target != self.predict(xi):
                     self.thetas += target * xi
+                    error += 1
+            self.errors.append(error)
 
             weights[index] = self.thetas.copy()
-            if (prev_weights == self.thetas).all():
+            if np.linalg.norm(self.thetas - prev_weights) <= self.tol:
                 converged = True
+
         self.weights = pd.DataFrame.from_dict(
             weights, orient="index", columns=["bias", "weight1", "weight2"]
         )
         return self
 
-    def _fit_online(self, X: np.ndarray, y: np.ndarray) -> Perceptron:
+    def _fit_online(self, X: NDArray, y: NDArray) -> Perceptron:
         R = (np.sum(np.abs(X) ** 2, axis=-1) ** (0.5)).max()
         bias = 0
         # Initialize weights to 0
@@ -102,7 +109,7 @@ class Perceptron(NeuralBase):
         learner = self._get_learner(learner)
         return learner(X, y)
 
-    def predict(self, X: NDArray, thetas: Optional[NDArray] = None) -> int:
+    def predict(self, X: NDArray) -> int:
         """Activation function to determine if neuron should fire or not
 
         Parameters
@@ -117,9 +124,7 @@ class Perceptron(NeuralBase):
         np.ndarray
             predictions
         """
-        if thetas is None:
-            return 1 if self.net_input(X, self.thetas) >= 0 else -1
-        return 1 if self.net_input(X, thetas) >= 0 else -1
+        return 1 if self.net_input(X, self.thetas) >= 0 else -1
 
     def plot_decision_boundary(self, inputs, targets, weights):
         for input, target in zip(inputs, targets):
@@ -130,6 +135,12 @@ class Perceptron(NeuralBase):
         for i in np.linspace(np.amin(inputs[:, :1]), np.amax(inputs[:, :1])):
             y = (slope * i) + intercept
             plt.plot(i, y, "ko")
+
+    def plot_misclassification_errors(self):
+        plt.plot(range(1, len(self.errors) + 1), self.errors, marker="o")
+        plt.xlabel("Epochs")
+        plt.ylabel("Number of updates")
+        plt.grid()
 
 
 class Adaline(NeuralBase):
@@ -167,16 +178,28 @@ class Adaline(NeuralBase):
         """
         # add bias + weights for each neuron
         self.thetas = np.zeros(shape=1 + X.shape[1])
-
+        n = X.shape[0]
         # Add bias unit to design matrix
         degree = self.degree
         X = self.make_polynomial(X, degree=degree, bias=True)
 
         for _ in range(self.niter):
-            error = y - self.activation(self.net_input(X, self.thetas))
-            self.thetas += self.eta * np.transpose(X).dot(error)
-            self.cost.append((error.transpose() @ error) / 2.0)
+            net_input = self.net_input(X, self.thetas)
+            error = y - self.activation(net_input)
+            loss = (error.T @ error) / (2.0 * n)
+            self.thetas += self.eta * X.T @ error / X.shape[0]
+            self.cost.append(loss)
         return self
+
+    def plot_misclassification_errors(self, use_log: bool = True):
+        if use_log:
+            plt.plot(range(1, len(self.cost) + 1), np.log10(self.cost), marker="o")
+            plt.ylabel("Log(Mean Squared Error)")
+        else:
+            plt.plot(range(1, len(self.cost) + 1), self.cost, marker="o")
+            plt.ylabel("Mean Squared Error")
+        plt.xlabel("Epochs")
+        plt.grid()
 
     def activation(self, X: NDArray) -> NDArray:
         """Computes the linear activation function
@@ -205,9 +228,6 @@ class Adaline(NeuralBase):
             [description], by default None
         """
         if thetas is None:
-            if self.activation(self.net_input(X, self.thetas)) >= 0.0:
-                return 1
-            else:
-                return -1
+            return 1 if self.activation(self.net_input(X, self.thetas)) >= 0.0 else -1
         else:
             return 1 if self.activation(self.net_input(X, thetas)) >= 0.0 else -1
