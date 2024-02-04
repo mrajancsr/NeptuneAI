@@ -4,4 +4,4 @@ from neptunelearn.linear_models.linear_regression import (
     LinearRegressionMLE,
 )
 from neptunelearn.linear_models.logistic_regression import LogisticRegression
-from neptunelearn.linear_models.neural_classifier import Perceptron
+from neptunelearn.linear_models.neural_classifier import AdalineGD, Perceptron
