@@ -1,7 +1,6 @@
 """Implementation of Gaussian Mixture Model EM Algorithm"""
 
 from itertools import chain
-from string import ascii_uppercase
 from typing import List, Tuple
 
 import numpy as np
