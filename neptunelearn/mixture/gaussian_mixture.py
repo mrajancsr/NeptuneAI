@@ -1,10 +1,12 @@
 """Implementation of Gaussian Mixture Model EM Algorithm"""
 
+from itertools import chain
+from string import ascii_uppercase
+from typing import List, Tuple
+
 import numpy as np
 import pandas as pd
-from itertools import chain
 from scipy.stats import norm
-from string import ascii_uppercase
 
 
 class GaussianMixture:
@@ -13,10 +15,8 @@ class GaussianMixture:
     Currently supports k-Gaussian mixtures
     - todo convergence until tolerance is reached
     """
-    def __init__(self,
-                 n_components: int = 1,
-                 tol: float = 1e-3,
-                 max_iter=100):
+
+    def __init__(self, n_components: int = 1, tol: float = 1e-3, max_iter=100):
         """Default Constructor used to initialize gmm model
 
         When the constructor is created, theta param is
@@ -36,11 +36,12 @@ class GaussianMixture:
         self.max_iter = max_iter
         self.theta = None
 
-    def _likelihood(self,
-                    obs: np.ndarray,
-                    mean: np.ndarray,
-                    sigma: np.ndarray,
-                    ) -> np.ndarray:
+    def _likelihood(
+        self,
+        obs: np.ndarray,
+        mean: np.ndarray,
+        sigma: np.ndarray,
+    ) -> np.ndarray:
         """Computes the likelihood p(x|z) of each observation
 
         :param obs: observed sample of mixtures
@@ -72,11 +73,9 @@ class GaussianMixture:
         pevidence = (likelihood @ prior)[:, np.newaxis]
         return likelihood * prior / pevidence
 
-    def estep(self,
-              obs: np.ndarray,
-              mean: np.ndarray,
-              sigma: np.ndarray,
-              prior: np.float64) -> np.ndarray:
+    def estep(
+        self, obs: np.ndarray, mean: np.ndarray, sigma: np.ndarray, prior: np.float64
+    ) -> np.ndarray:
         """Computes the e-step in EM algorithm
 
         :param obs: observed sample of mixtures
@@ -96,10 +95,11 @@ class GaussianMixture:
         likelihood = self._likelihood(obs, mean, sigma)
         return self.qprob(likelihood, prior)
 
-    def mstep(self,
-              obs: np.ndarray,
-              qprob: np.ndarray,
-              ) -> tuple:
+    def mstep(
+        self,
+        obs: np.ndarray,
+        qprob: np.ndarray,
+    ) -> Tuple[float, np.ndarray, float]:
         """Computes the m-step in EM algorithm
 
         :param obs: observed sample of mixtures
@@ -117,13 +117,13 @@ class GaussianMixture:
 
         # calculate mean and variance based on mle
         muk = (qprob.T @ obs / nk)[:, np.newaxis]
-        vark = (qprob * ((obs - muk)**2).T).sum(axis=0) / nk
+        vark = (qprob * ((obs - muk) ** 2).T).sum(axis=0) / nk
 
         # calculate prior
         prior = nk / qprob.shape[0]
         return prior, muk.flatten(), np.sqrt(vark)
 
-    def fit(self, obs: np.ndarray, show=False) -> 'GaussianMixture':
+    def fit(self, obs: np.ndarray, show=False) -> "GaussianMixture":
         """fits a Gaussian Mixture model via EM
 
         :param obs: observations of mixtures
@@ -162,7 +162,7 @@ class GaussianMixture:
         self.theta = pd.DataFrame(theta, columns=cols)
         return self
 
-    def _make_titles(self) -> list:
+    def _make_titles(self) -> List[str]:
         """Creates column titles after em is run
 
         :return: list of dataframe column titles
@@ -170,8 +170,8 @@ class GaussianMixture:
         """
         # get the letters and create titles
         n = self.n_components
-        letters = ascii_uppercase[:n]
-        col1 = list("p(z={i})".format(i=i) for i in range(n))
-        col2 = list("mean{i}".format(i=i) for i in range(1, n + 1))
-        col3 = list("sigma{i}".format(i=i) for i in range(1, n + 1))
+        col1 = [f"p(z={i})" for i in range(n)]
+        col2 = [f"mean{i}" for i in range(1, n + 1)]
+        col3 = [f"sigma{i}" for i in range(1, n + 1)]
+
         return list(chain(col1, col2, col3))
