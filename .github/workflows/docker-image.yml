@@ -19,3 +19,8 @@ jobs:
           pip install flake8
           flake8 .
         continue-on-error: false
+      
+      - name: runner / black formatter
+        uses: rickstaa/action-black@v1
+        with:
+          black_args: ". --check"
