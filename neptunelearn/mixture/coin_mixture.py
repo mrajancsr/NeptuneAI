@@ -22,7 +22,11 @@ class CoinMixture:
     """
 
     def __init__(
-        self, n_coins: int = 1, m_flips: int = 10, tol: float = 1e-3, max_iter=100
+        self,
+        n_coins: int = 1,
+        m_flips: int = 10,
+        tol: float = 1e-3,
+        max_iter=100,
     ):
         """Default Constructor used to initialize cmm model
 
@@ -184,6 +188,12 @@ class CoinMixture:
         coin_A = bernoulli(theta_A)
         coin_B = bernoulli(theta_B)
         trials = np.vstack(
-            [coin_A.rvs(m), coin_A.rvs(m), coin_B.rvs(m), coin_A.rvs(m), coin_B.rvs(m)]
+            [
+                coin_A.rvs(m),
+                coin_A.rvs(m),
+                coin_B.rvs(m),
+                coin_A.rvs(m),
+                coin_B.rvs(m),
+            ]
         )
         return trials
