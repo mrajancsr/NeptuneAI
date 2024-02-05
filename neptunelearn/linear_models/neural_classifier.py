@@ -196,9 +196,21 @@ class AdalineGD(NeuralBase):
             [description], by default None
         """
         if thetas is None:
-            return 1 if self.activation(self.net_input(X, self.thetas)) >= 0.0 else -1
+            return np.where(
+                self.activation(self.net_input(X, self.thetas)) >= 0.0, 1, -1
+            )
         else:
-            return 1 if self.activation(self.net_input(X, thetas)) >= 0.0 else -1
+            return np.where(self.activation(self.net_input(X, thetas)) >= 0.0, 1, -1)
+
+    def plot_decision_boundary(self, inputs, targets, weights):
+        for input, target in zip(inputs, targets):
+            plt.plot(input[0], input[1], "rx" if (target == 1.0) else "bo")
+
+        slope = -weights[1] / weights[2]
+        intercept = -weights[0] / weights[2]
+        for i in np.linspace(np.amin(inputs[:, :1]), np.amax(inputs[:, :1])):
+            y = (slope * i) + intercept
+            plt.plot(i, y, "ko")
 
 
 @dataclass
