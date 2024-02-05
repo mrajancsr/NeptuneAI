@@ -178,12 +178,6 @@ class CoinMixture:
 
     def _flipcoins(self, thetaA, thetaB, m):
         """flips the two coins m times for 5 trials"""
-        """trials = 
-        np.array([[1,0,0,0,1,1,0,1,0,1], [1,1,1,1,0,1,1,1,1,1], 
-        [1,0,1,1,1,1,1,0,1,1], 
-        [1,0,1,0,0,0,1,1,0,0],
-        [0,1,1,1,0,1,1,1,0,1]])
-        """
         m = 100  # 100 tosses of each coin
         theta_A = 0.8
         theta_B = 0.1
