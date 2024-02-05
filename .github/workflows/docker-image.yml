@@ -14,10 +14,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: List with flake8
+      - name: Lint with flake8
         run: |
           pip install flake8
-          flake8 .
+          flake8 . --max-line-length=85 --statistics
         continue-on-error: false
       
       - name: runner / black formatter
