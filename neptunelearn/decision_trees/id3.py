@@ -2,7 +2,7 @@
 """Implementation of ID3(Iterative Dichotomiser 3) Algorithm
 based on Mitchell (1997)
 Author: Rajan Subramanian
-Date: 
+Date:
 Notes:
     - This Algorithm is only applicable for classification tasks
     - todo Also include the c4.5 algorithm of Quinian (rule post pruning)
