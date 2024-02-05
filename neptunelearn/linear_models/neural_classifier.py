@@ -10,7 +10,7 @@ learning rate eta has no effect on decision boundary
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, Optional
+from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -60,7 +60,7 @@ class Perceptron(NeuralBase):
             error = 0
             index += 1
             prev_weights = self.thetas.copy()
-            # for each example in training set
+
             for xi, target in zip(X, y):
                 # update weights if there are misclassifications
                 if target != self.predict(xi):
