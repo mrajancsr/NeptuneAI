@@ -1,4 +1,4 @@
-name: Deploy to ECR
+name: Neptune-AI WorkFlow
 
 on:
   push:
