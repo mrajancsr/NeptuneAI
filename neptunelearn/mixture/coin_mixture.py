@@ -1,12 +1,12 @@
 """Implementation of coin mixture via EM algorithm"""
 
-import pandas as pd
-import numpy as np
 from itertools import chain
-from numpy.random import sample
-from scipy.optimize import minimize
-from scipy.stats import bernoulli, binom
 from string import ascii_uppercase
+
+import numpy as np
+import pandas as pd
+from numpy.random import sample
+from scipy.stats import bernoulli, binom
 
 
 class CoinMixture:
@@ -20,11 +20,10 @@ class CoinMixture:
 
     Currently supports 2 coin mixtures
     """
-    def __init__(self,
-                 n_coins: int = 1,
-                 m_flips: int = 10,
-                 tol: float = 1e-3,
-                 max_iter=100):
+
+    def __init__(
+        self, n_coins: int = 1, m_flips: int = 10, tol: float = 1e-3, max_iter=100
+    ):
         """Default Constructor used to initialize cmm model
 
         When the constructor is created, theta param is
@@ -82,10 +81,11 @@ class CoinMixture:
         pevidence = likelihood @ prior[:, np.newaxis]
         return likelihood * prior / pevidence
 
-    def estep(self,
-              trial: np.ndarray,
-              theta: np.ndarray,
-              ) -> tuple:
+    def estep(
+        self,
+        trial: np.ndarray,
+        theta: np.ndarray,
+    ) -> tuple:
         """Computes the e-step in EM algorithm
 
         :param obs: observed samples of mixtures
@@ -103,10 +103,11 @@ class CoinMixture:
         # compute the posterior prob of each trial
         return self.qprob(lik, prior)
 
-    def mstep(self,
-              trial: np.ndarray,
-              qprob: np.ndarray,
-              ):
+    def mstep(
+        self,
+        trial: np.ndarray,
+        qprob: np.ndarray,
+    ):
         """Computes the m-step in the EM algorithm
 
         :param heads_per_trial: [description]
@@ -127,11 +128,12 @@ class CoinMixture:
         prior = qprob.mean(axis=0)
         return np.concatenate((prior, pheads))
 
-    def fit(self,
-            trial: np.ndarray,
-            show: bool = False,
-            guess: np.ndarray = None,
-            ) -> 'CoinMixture':
+    def fit(
+        self,
+        trial: np.ndarray,
+        show: bool = False,
+        guess: np.ndarray = None,
+    ) -> "CoinMixture":
         """fits a coin mixture model via EM
 
         :param trial: m_flips each trial
@@ -169,7 +171,7 @@ class CoinMixture:
         :rtype: list
         """
         # get the letters and create titles
-        letters = ascii_uppercase[:self.n_coins]
+        letters = ascii_uppercase[: self.n_coins]
         col1 = list("p(z={i})".format(i=i) for i in range(self.n_coins))
         col2 = list("theta{i}".format(i=i) for i in letters)
         return list(chain(col1, col2))
@@ -182,10 +184,12 @@ class CoinMixture:
         [1,0,1,0,0,0,1,1,0,0],
         [0,1,1,1,0,1,1,1,0,1]])
         """
-        m = 100 # 100 tosses of each coin
+        m = 100  # 100 tosses of each coin
         theta_A = 0.8
         theta_B = 0.1
         coin_A = bernoulli(theta_A)
         coin_B = bernoulli(theta_B)
-        trials = np.vstack([coin_A.rvs(m), coin_A.rvs(m), coin_B.rvs(m), coin_A.rvs(m), coin_B.rvs(m)])
+        trials = np.vstack(
+            [coin_A.rvs(m), coin_A.rvs(m), coin_B.rvs(m), coin_A.rvs(m), coin_B.rvs(m)]
+        )
         return trials
