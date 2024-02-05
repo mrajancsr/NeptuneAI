@@ -1,10 +1,10 @@
 """Implements the Perceptron & Adaline Learning Algorithm
 Author: Rajan Subramanian
 
-Note: for the perceptron algorithm, if weights are initialized to 0, 
+Note: for the perceptron algorithm, if weights are initialized to 0,
 learning rate eta has no effect on decision boundary
 - so initializing weights to 0 affects only the scale of weights not direction
-- todo: need to either correctly name fit_online or remove this as i dont know where this came from
+- todo: need to either correctly name fit_online or remove this
 """
 
 from __future__ import annotations
@@ -24,7 +24,9 @@ from neptunelearn.linear_models.base import NeuralBase
 class Perceptron(NeuralBase):
     """Implements the Perceptron Algorithm"""
 
-    thetas: NDArray[np._float] = field(init=False, default_factory=lambda: np.array([]))
+    thetas: NDArray[np._float] = field(
+        init=False, default_factory=lambda: np.array([])
+    )  # noqa
     weights: pd.DataFrame = field(init=False, default=None)
     degree: int = 1
     bias: bool = True
@@ -161,7 +163,9 @@ class AdalineGD(NeuralBase):
 
     def plot_misclassification_errors(self, use_log: bool = True):
         if use_log:
-            plt.plot(range(1, len(self.cost) + 1), np.log10(self.cost), marker="o")
+            plt.plot(
+                range(1, len(self.cost) + 1), np.log10(self.cost), marker="o"
+            )  # noqa
             plt.ylabel("Log(Mean Squared Error)")
         else:
             plt.plot(range(1, len(self.cost) + 1), self.cost, marker="o")
@@ -200,7 +204,9 @@ class AdalineGD(NeuralBase):
                 self.activation(self.net_input(X, self.thetas)) >= 0.0, 1, -1
             )
         else:
-            return np.where(self.activation(self.net_input(X, thetas)) >= 0.0, 1, -1)
+            return np.where(
+                self.activation(self.net_input(X, thetas)) >= 0.0, 1, -1
+            )  # noqa
 
     def plot_decision_boundary(self, inputs, targets, weights):
         for input, target in zip(inputs, targets):
