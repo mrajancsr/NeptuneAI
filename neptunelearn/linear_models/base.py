@@ -1,13 +1,9 @@
 """Abstract base class for regression models"""
 
 from abc import ABCMeta, abstractmethod
-from operator import itemgetter
-from typing import Dict
 
-import matplotlib.pyplot as plt
 import numpy as np
-from numpy import dot
-from sklearn.datasets import make_regression
+from numpy.typing import NDArray
 from sklearn.preprocessing import PolynomialFeatures
 
 
@@ -22,33 +18,11 @@ class LinearBase(metaclass=ABCMeta):
     def predict(self):
         pass
 
-    def make_regression_example(
-        self, n_samples: int = 1000, n_features: int = 5
-    ) -> Dict:
-        features, output, coef = make_regression(
-            n_samples=n_samples,
-            n_features=n_features,
-            n_informative=n_features,
-            n_targets=1,
-            noise=5,
-            coef=True,
-        )
-        return dict(zip(["X", "y", "coef"], [features, output, coef]))
-
-    def make_polynomial(self, X: np.ndarray, degree: int, bias: bool) -> np.ndarray:
+    def make_polynomial(
+        self, X: np.ndarray, degree: int, bias: bool
+    ) -> NDArray:  # noqa
         pf = PolynomialFeatures(degree=degree, include_bias=bias)
         return pf.fit_transform(X)
-
-    def reg_plot(self, X: np.ndarray, y: np.ndarray):
-        plt.figure(figsize=(10, 6))
-        plt.scatter(X, y)
-        # sort by design matrix -- needed for matplotlib
-        sorted_values = iter(
-            sorted(zip(X.flatten(), self.diagnostics.predictions), key=itemgetter(0))
-        )
-        X, pred = zip(*sorted_values)
-        plt.plot(X, pred, "m-")
-        plt.title("Regression Plot")
 
 
 class LogisticBase(LinearBase):
@@ -69,14 +43,14 @@ class LogisticBase(LinearBase):
         """
         return 1.0 / (1 + np.exp(-z))
 
-    def net_input(self, X: np.ndarray, thetas: np.ndarray) -> np.ndarray:
+    def net_input(self, X: np.ndarray, theta: np.ndarray) -> np.ndarray:
         """Computes the Linear transformation X@theta
 
         Parameters
         ----------
         X : np.ndarray, shape={n_samples, p_features}
-            design matrix
-        thetas : np.ndarray, shape={p_features + intercept}
+            feature matrix
+        theta : np.ndarray, shape={p_features + intercept}
             weights of logistic regression
 
         Returns
@@ -84,13 +58,13 @@ class LogisticBase(LinearBase):
         np.ndarray
             linear transformation
         """
-        return dot(X, thetas)
+        return X @ theta
 
 
 class NeuralBase(LinearBase):
     """Abstract Base class representing a Neural Network"""
 
-    def net_input(self, X: np.ndarray, thetas: np.ndarray) -> float:
+    def net_input(self, X: np.ndarray, theta: np.ndarray) -> float:
         """Computes the net input vector
         z = w1x1 + w2x2 + ... + wpxp := w'x
 
@@ -107,4 +81,4 @@ class NeuralBase(LinearBase):
         np.ndarray
             linear transformation
         """
-        return dot(X, thetas)
+        return X @ theta
