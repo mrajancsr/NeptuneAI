@@ -36,4 +36,8 @@ jobs:
         run: |
           python3 -m pytest ./tests --cov=neptunelearn/linear_models --cov-report=html
       
+      - name: Coverage report
+        run: |
+          coverage report -m
+      
       
