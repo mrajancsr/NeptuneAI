@@ -9,6 +9,7 @@ dataclasses-json==0.6.4
 debugpy==1.8.0
 decorator==5.1.1
 executing==2.0.1
+flake8==7.0.0
 fonttools==4.47.2
 iniconfig==2.0.0
 intervaltree==3.1.0
@@ -23,6 +24,7 @@ libcst==1.1.0
 marshmallow==3.20.2
 matplotlib==3.8.2
 matplotlib-inline==0.1.6
+mccabe==0.7.0
 mypy-extensions==1.0.0
 nest-asyncio==1.6.0
 numpy==1.26.3
@@ -38,6 +40,8 @@ psutil==5.9.8
 ptyprocess==0.7.0
 pure-eval==0.2.2
 pyarrow==15.0.0
+pycodestyle==2.11.1
+pyflakes==3.2.0
 Pygments==2.17.2
 pyparsing==3.1.1
 pyre-check==0.9.19
