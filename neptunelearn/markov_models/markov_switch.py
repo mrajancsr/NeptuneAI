@@ -420,7 +420,7 @@ class MarkovSwitchModel:
         # compute the posterior joint probabilities
         # each observation state is at 00, 01, 10, 11
         n = smooth_prob.shape[0]
-        qprob = np.zeros((n, 2 ** self.nregime))
+        qprob = np.zeros((n, 2**self.nregime))
 
         # -- initial values don't really matter since for
         # -- algorithm, we are starting at index 1
@@ -505,7 +505,7 @@ class MarkovSwitchModel:
         spread1, spread2 = obs[1:] - mu0, obs[1:] - mu1
         # by default, assume mean switch with constant variance
         if not self.variance_switch:
-            var = qprob[1:, 0] * spread1 ** 2 + qprob[1:, 1] * spread2 ** 2
+            var = qprob[1:, 0] * spread1**2 + qprob[1:, 1] * spread2**2
         return pkk, muk, [np.sqrt(var.mean())]
 
     def fit_em(
