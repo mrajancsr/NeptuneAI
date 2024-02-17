@@ -1,4 +1,5 @@
-# To run the test, go to root folder and type:  pytest tests --cov=neptunelearn/linear_models --cov-report=html
+# To run the test, go to root folder and type:
+# pytest tests --cov=neptunelearn/linear_models --cov-report=html
 # another option is to use python -m coverage run -m pytest tests
 import unittest
 
