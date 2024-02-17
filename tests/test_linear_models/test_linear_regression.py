@@ -8,7 +8,6 @@ from sklearn import datasets
 
 from neptunelearn.linear_models.linear_regression import (
     LinearRegression,
-    LinearRegressionGD,
     LinearRegressionMLE,
     RegressionDiagnostics,
 )

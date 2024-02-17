@@ -1,8 +1,6 @@
 import unittest
 
 import numpy as np
-from numpy.testing import assert_allclose
-from sklearn import datasets
 
 from neptunelearn.linear_models.logistic_regression import LogisticRegression
 

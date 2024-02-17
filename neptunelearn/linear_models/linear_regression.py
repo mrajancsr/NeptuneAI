@@ -6,7 +6,7 @@ Created: May 23, 2020
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, List, Optional, Union
+from typing import Callable, List, Optional
 
 import numpy as np
 from numpy import log
@@ -221,10 +221,10 @@ class LinearRegression(LinearBase):
             self.run = True
 
         if run_diagnostics:
-            self.diagnostics = compute_regression_diagnostics(
+            self.diagnostics = RegressionDiagnostics(
                 X,
                 y,
-                self.theta,
+                weights,
                 self.predict(X),
             )
 
