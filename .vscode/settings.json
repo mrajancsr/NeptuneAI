@@ -19,5 +19,19 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
-  }
+  },
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    ".",
+    "-p",
+    "*test*.py"
+  ],
+  "python.testing.pytestArgs": [
+    "-v",
+    "--cov-report=html",
+    "tests/"
+  ],
+  "python.testing.unittestEnabled": true,
+  "python.testing.pytestEnabled": true,
 }

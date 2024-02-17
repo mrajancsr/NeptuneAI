@@ -16,16 +16,14 @@ jobs:
       
       - name: Install Python Dependencies
         run: |
-            if [ -f requirements.txt ]; then pip install -r requirements.txt;
+            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Lint with flake8
         run: |
-          pip install flake8
           flake8 . --max-line-length=85 --statistics
         continue-on-error: false
       
-      - name: Run tests and coverage
-        run: pytest tests --cov=neptunelearn/linear_models --cov-report=json
+      
           
       
       

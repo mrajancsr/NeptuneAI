@@ -140,4 +140,10 @@ secrets
 
 #ipynb and test files
 *.ipynb
-test.py
+py_env
+
+# csv files
+*.csv
+
+# coverage reports
+coverage_report_html
