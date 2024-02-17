@@ -1,7 +1,6 @@
 # pyre-strict
 """Implementation of Linear Regression using various fitting methods
 Author: Rajan Subramanian
-Created: May 23, 2020
 """
 from __future__ import annotations
 
